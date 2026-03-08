@@ -1,6 +1,9 @@
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { fetchClassesServer } from '@/lib/api/server-classes'
 import LogoutButton from './logout-button'
+import CreateClassForm from './create-class-form'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -13,6 +16,8 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
+  const classes = await fetchClassesServer()
+
   const firstName =
     user.user_metadata?.full_name?.split(' ')[0] ||
     user.email?.split('@')[0] ||
@@ -21,7 +26,7 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-screen bg-[#f5f5f7] text-slate-900">
       <div className="mx-auto max-w-7xl px-6 py-6">
-        <header className="rounded-[2rem] border border-white/70 bg-white/70 px-6 py-5 shadow-[0_10px_50px_rgba(15,23,42,0.06)] backdrop-blur-2xl">
+        <header className="rounded-[32px] border border-white/70 bg-white/70 px-7 py-6 shadow-[0_10px_50px_rgba(15,23,42,0.06)] backdrop-blur-2xl">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="text-sm font-medium text-slate-500">LecturePilot</p>
@@ -33,53 +38,48 @@ export default async function DashboardPage() {
           </div>
         </header>
 
-        <section className="mt-6 grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-[2rem] border border-white/70 bg-white/70 p-8 shadow-[0_10px_50px_rgba(15,23,42,0.06)] backdrop-blur-2xl">
+        <section className="mt-6 grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="rounded-[32px] border border-white/70 bg-white/70 p-8 shadow-[0_10px_50px_rgba(15,23,42,0.06)] backdrop-blur-2xl">
             <p className="text-sm font-medium text-slate-500">Welcome back</p>
-            <h2 className="mt-2 text-4xl font-semibold tracking-[-0.04em] text-slate-950">
+            <h2 className="mt-2 text-4xl font-semibold tracking-[-0.045em] text-slate-950">
               Hi, {firstName}
             </h2>
-            <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-              Your study space should feel simple. Create classes, organize lecture material,
-              and build a workflow that makes learning smoother.
+            <p className="mt-4 max-w-2xl text-[15px] leading-7 text-slate-600">
+              Keep each course organized in one place and build a cleaner study workflow
+              around your lecture material.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-3">
-              <button className="rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-slate-900/10 transition hover:scale-[1.01] hover:bg-slate-900 active:scale-[0.99]">
-                Create Class
-              </button>
-              <div className="rounded-full border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600 shadow-sm">
-                {user.email}
-              </div>
+            <div className="mt-8">
+              <CreateClassForm />
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/70 bg-gradient-to-br from-blue-500 to-violet-500 p-8 text-white shadow-[0_20px_60px_rgba(79,70,229,0.22)]">
-            <p className="text-sm font-medium text-white/80">Designed for focus</p>
-            <h3 className="mt-2 text-2xl font-semibold tracking-[-0.03em]">
-              A calmer way to keep up with class.
+          <div className="rounded-[32px] bg-gradient-to-br from-[#7dd3fc] via-[#60a5fa] to-[#818cf8] p-8 text-white shadow-[0_18px_60px_rgba(96,165,250,0.28)]">
+            <p className="text-sm font-medium text-white/80">Built for learning</p>
+            <h3 className="mt-2 text-2xl font-semibold tracking-[-0.035em]">
+              Calm, structured, and easy to come back to.
             </h3>
-            <p className="mt-4 text-sm leading-7 text-white/85">
-              Clean structure, less friction, and faster access to the things you actually need when studying.
+            <p className="mt-4 text-sm leading-7 text-white/90">
+              LecturePilot is designed to make school feel less cluttered and more manageable.
             </p>
           </div>
         </section>
 
-        <section className="mt-6">
-          <div className="mb-4 flex items-end justify-between">
+        <section className="mt-6 rounded-[32px] border border-white/70 bg-white/70 p-8 shadow-[0_10px_50px_rgba(15,23,42,0.06)] backdrop-blur-2xl">
+          <div className="mb-6 flex items-end justify-between">
             <div>
-              <h3 className="text-2xl font-semibold tracking-[-0.03em] text-slate-950">
+              <h3 className="text-2xl font-semibold tracking-[-0.035em] text-slate-950">
                 Your Classes
               </h3>
               <p className="mt-1 text-sm text-slate-500">
-                Start with one class and build from there.
+                Open a class to manage materials and questions.
               </p>
             </div>
           </div>
 
-          <div className="rounded-[2rem] border border-white/70 bg-white/70 p-10 shadow-[0_10px_50px_rgba(15,23,42,0.06)] backdrop-blur-2xl">
-            <div className="flex flex-col items-center justify-center text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-[1.5rem] bg-gradient-to-br from-blue-100 to-violet-100 shadow-inner">
+          {classes.length === 0 ? (
+            <div className="rounded-[28px] border border-dashed border-black/10 bg-white/70 px-8 py-14 text-center">
+              <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-[22px] bg-[#f2f4f7]">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-7 w-7 text-slate-700"
@@ -99,15 +99,41 @@ export default async function DashboardPage() {
               <h4 className="mt-6 text-xl font-semibold tracking-[-0.02em] text-slate-950">
                 No classes yet
               </h4>
-              <p className="mt-3 max-w-xl text-sm leading-7 text-slate-600">
-                Create your first class to start organizing lectures, notes, and learning materials in a cleaner, more structured way.
+              <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-slate-600">
+                Create your first class to start organizing lectures, notes, and other materials.
               </p>
-
-              <button className="mt-7 rounded-full bg-slate-950 px-5 py-3 text-sm font-medium text-white shadow-lg shadow-slate-900/10 transition hover:scale-[1.01] hover:bg-slate-900 active:scale-[0.99]">
-                Create your first class
-              </button>
             </div>
-          </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {classes.map((cls) => (
+                <Link
+                  key={cls.id}
+                  href={`/dashboard/classes/${cls.id}`}
+                  className="group rounded-[28px] border border-black/5 bg-white p-6 shadow-[0_8px_30px_rgba(15,23,42,0.05)] transition hover:-translate-y-0.5 hover:shadow-[0_14px_40px_rgba(15,23,42,0.08)]"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-lg font-semibold tracking-[-0.02em] text-slate-950">
+                        {cls.name}
+                      </p>
+                      <p className="mt-2 text-sm text-slate-500">Open class</p>
+                    </div>
+
+                    <div className="rounded-full bg-[#f5f5f7] px-3 py-1 text-xs font-medium text-slate-500">
+                      Class
+                    </div>
+                  </div>
+
+                  <div className="mt-6 h-px bg-black/5" />
+
+                  <div className="mt-4 flex items-center justify-between text-sm text-slate-500">
+                    <span>Workspace</span>
+                    <span className="transition group-hover:translate-x-0.5">→</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       </div>
     </main>
