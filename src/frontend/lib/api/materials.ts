@@ -6,7 +6,10 @@ export type MaterialItem = {
   id: string
   class_id: string
   type: 'pdf' | 'notes'
+  source_type?: 'pdf' | 'notes' | 'youtube'
   name: string
+  source_label?: string | null
+  external_url?: string | null
   storage_path: string | null
   status: 'queued' | 'processing' | 'completed' | 'failed'
   error_message: string | null

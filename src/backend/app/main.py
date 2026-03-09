@@ -9,6 +9,7 @@ from app.core.config import settings
 from app.api.routes.ask import router as ask_router
 from app.api.routes.youtube import router as youtube_router
 from app.api.routes.quiz import router as quiz_router
+from app.api.routes.flashcards import router as flashcards_router
 
 app = FastAPI(title="LecturePilot Backend")
 
@@ -27,6 +28,7 @@ app.include_router(materials_router, prefix="/api")
 app.include_router(ask_router, prefix="/api")
 app.include_router(youtube_router, prefix="/api")
 app.include_router(quiz_router, prefix="/api")
+app.include_router(flashcards_router, prefix="/api")
 
 @app.get("/")
 def root():

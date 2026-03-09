@@ -5,6 +5,7 @@ from app.core.config import settings
 from app.core.security import get_current_user
 from app.models.youtube_model import YouTubeIngestRequest
 from app.services.embedding_service import embed_texts
+from app.services.flashcard_persistence_service import generate_and_store_flashcards_for_material
 from app.services.transcript_chunking_service import split_transcript_into_chunks
 from app.services.youtube_service import extract_video_id, fetch_transcript
 
@@ -115,7 +116,26 @@ def ingest_youtube_lecture(
             }
         )
 
-    supabase.table("chunks").insert(rows).execute()
+    insert_result = supabase.table("chunks").insert(rows).execute()
+    stored_chunks = insert_result.data or []
+
+    normalized_chunks = []
+    for chunk in stored_chunks:
+        normalized_chunks.append(
+            {
+                "id": chunk.get("id"),
+                "content": chunk.get("content"),
+                "page_number": chunk.get("page_number"),
+                "timestamp_seconds": chunk.get("timestamp_seconds"),
+                "material_name": source_label,
+            }
+        )
+
+    generate_and_store_flashcards_for_material(
+        class_id=class_id,
+        material_id=material_id,
+        chunks=normalized_chunks,
+    )
 
     return {
         "material": material,
