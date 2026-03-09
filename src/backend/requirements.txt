@@ -5,3 +5,8 @@ pydantic-settings
 supabase
 pyjwt[crypto]
 httpx
+python-multipart
+pymupdf
+openai
+celery
+redis

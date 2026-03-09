@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     supabase_secret_key: str
     frontend_url: str = "http://localhost:3000"
     app_env: str = "development"
+    openai_api_key: str
+    redis_url: str
+    supabase_storage_bucket: str
 
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
 

@@ -1,0 +1,1 @@
+from app.tasks.material_tasks import process_material
