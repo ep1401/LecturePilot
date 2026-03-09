@@ -4,7 +4,11 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 
-const API_BASE = 'http://127.0.0.1:8000/api'
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL
+
+if (!API_BASE) {
+  throw new Error('Missing NEXT_PUBLIC_API_BASE_URL')
+}
 
 export default function CreateClassForm() {
   const [name, setName] = useState('')
