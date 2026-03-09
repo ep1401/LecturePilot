@@ -10,7 +10,15 @@ type Props = {
 type Source = {
   material_name: string
   page_number: number | null
+  timestamp_seconds: number | null
   chunk_id: string
+}
+
+function formatTimestamp(seconds: number | null) {
+  if (seconds == null) return null
+  const minutes = Math.floor(seconds / 60)
+  const remaining = seconds % 60
+  return `${minutes}:${String(remaining).padStart(2, '0')}`
 }
 
 export default function AskQuestionPanel({ classId }: Props) {
@@ -84,15 +92,19 @@ export default function AskQuestionPanel({ classId }: Props) {
             <div className="mt-6">
               <p className="text-sm font-medium text-slate-500">Sources</p>
               <div className="mt-3 space-y-2">
-                {sources.map((source, idx) => (
-                  <div
-                    key={`${source.chunk_id}-${idx}`}
-                    className="rounded-2xl border border-black/5 bg-white px-4 py-3 text-sm text-slate-700"
-                  >
-                    {source.material_name}
-                    {source.page_number ? ` p. ${source.page_number}` : ''}
-                  </div>
-                ))}
+                {sources.map((source, idx) => {
+                    const ts = formatTimestamp(source.timestamp_seconds)
+
+                    return (
+                      <div
+                        key={`${source.chunk_id}-${idx}`}
+                        className="rounded-2xl border border-black/5 bg-white px-4 py-3 text-sm text-slate-700"
+                      >
+                        {source.material_name}
+                        {ts ? ` — ${ts}` : source.page_number ? ` p. ${source.page_number}` : ''}
+                      </div>
+                    )
+                  })}
               </div>
             </div>
           )}

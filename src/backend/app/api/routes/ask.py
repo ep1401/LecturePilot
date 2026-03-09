@@ -72,7 +72,11 @@ def ask_question(
     seen = set()
 
     for chunk in chunks:
-        key = (chunk.get("material_name"), chunk.get("page_number"))
+        key = (
+            chunk.get("material_name"),
+            chunk.get("page_number"),
+            chunk.get("timestamp_seconds"),
+        )
         if key in seen:
             continue
         seen.add(key)
@@ -81,6 +85,7 @@ def ask_question(
             {
                 "material_name": chunk.get("material_name"),
                 "page_number": chunk.get("page_number"),
+                "timestamp_seconds": chunk.get("timestamp_seconds"),
                 "chunk_id": chunk.get("id"),
             }
         )

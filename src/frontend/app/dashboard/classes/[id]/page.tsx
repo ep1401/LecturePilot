@@ -4,6 +4,7 @@ import DeleteClassButton from './delete-class-button'
 import UploadMaterialForm from './upload-material-form'
 import MaterialsList from './materials-list'
 import AskQuestionPanel from './ask-question-panel'
+import YouTubeIngestForm from './youtube-ingest-form'
 
 export default async function ClassPage({
   params,
@@ -50,7 +51,10 @@ export default async function ClassPage({
         </section>
 
         <section className="mt-6 grid gap-4 xl:grid-cols-[0.95fr_1.05fr]">
-          <UploadMaterialForm classId={classData.id} />
+          <div className="space-y-4">
+            <UploadMaterialForm classId={classData.id} />
+            <YouTubeIngestForm classId={classData.id} />
+          </div>
           <MaterialsList classId={classData.id} />
         </section>
 

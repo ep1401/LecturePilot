@@ -10,3 +10,4 @@ pymupdf
 openai
 celery
 redis
+youtube-transcript-api

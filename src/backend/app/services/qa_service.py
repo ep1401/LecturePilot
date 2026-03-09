@@ -5,12 +5,13 @@ from app.core.config import settings
 client = OpenAI(api_key=settings.openai_api_key)
 
 
-def embed_question(question: str) -> list[float]:
-    response = client.embeddings.create(
-        model="text-embedding-3-small",
-        input=question,
-    )
-    return response.data[0].embedding
+def format_timestamp(seconds: int | None) -> str | None:
+    if seconds is None:
+        return None
+
+    minutes = seconds // 60
+    remaining_seconds = seconds % 60
+    return f"{minutes}:{remaining_seconds:02d}"
 
 
 def build_context(chunks: list[dict]) -> str:
@@ -19,17 +20,28 @@ def build_context(chunks: list[dict]) -> str:
     for i, chunk in enumerate(chunks, start=1):
         material_name = chunk.get("material_name", "Unknown material")
         page_number = chunk.get("page_number")
+        timestamp_seconds = chunk.get("timestamp_seconds")
         content = chunk.get("content", "")
 
-        source_label = f"{material_name}"
-        if page_number is not None:
-            source_label += f" p. {page_number}"
+        if timestamp_seconds is not None:
+            ts = format_timestamp(timestamp_seconds)
+            source_label = f"{material_name} — {ts}"
+        elif page_number is not None:
+            source_label = f"{material_name} p. {page_number}"
+        else:
+            source_label = material_name
 
-        context_parts.append(
-            f"[Source {i}: {source_label}]\n{content}"
-        )
+        context_parts.append(f"[Source {i}: {source_label}]\n{content}")
 
     return "\n\n".join(context_parts)
+
+
+def embed_question(question: str) -> list[float]:
+    response = client.embeddings.create(
+        model="text-embedding-3-small",
+        input=question,
+    )
+    return response.data[0].embedding
 
 
 def generate_answer(question: str, chunks: list[dict]) -> str:
