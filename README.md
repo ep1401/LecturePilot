@@ -6,7 +6,7 @@ LecturePilot is an AI-powered study platform that transforms lecture materials i
 The system uses retrieval-augmented generation (RAG) with vector embeddings to enable semantic search, question answering, flashcard generation, and quiz generation across uploaded lecture content.
 
 **Live Demo:**  
-https://lecture-pilot.vercel.app/login
+https://lecture-pilot.vercel.app
 
 ---
 
